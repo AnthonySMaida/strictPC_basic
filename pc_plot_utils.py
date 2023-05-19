@@ -42,7 +42,7 @@ class PcPlotUtils:
         #ax.legend(loc="center left", bbox_to_anchor=(1, 0.5))
         plt.legend(loc = 'right', fontsize=12)
         fig.subplots_adjust(bottom=0.2)
-        plt.savefig('z4_{strng}_convergence_process{n}equi{epochs}eps.pdf', format='pdf')
+        plt.savefig('z4_{0}_convergence_process{1}equi{2}eps.pdf'.format(strng,n,epochs), format='pdf')
         plt.show()
         
     def plot_unit_convergence(self, strng, start, end, x_range, epochs, n, ylim1=-10, ylim2=10):
