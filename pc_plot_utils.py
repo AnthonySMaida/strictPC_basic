@@ -63,14 +63,14 @@ class PcPlotUtils:
         plt.savefig("z2_{0}_wt_converge{1}equi{2}eps.pdf".format(strng,n,epochs), format='pdf')
         plt.show()
         
-    def plot_loss(self, epochs, n, loss):
+    def plot_loss(self, strng, epochs, n, loss):
         fig = plt.figure()
         ax = fig.add_subplot(1,1,1)
         plt.gca().set_xlim(0, epochs)
         #plt.gca().set_ylim(.7, .85)  # set plot bounds by hand
         plt.setp(ax.get_xticklabels(), fontsize=14)
         plt.setp(ax.get_yticklabels(), fontsize=14)
-        plt.title('Loss: {0} Epochs Wt Training'.format(epochs), fontsize=16)
+        plt.title('{0} Loss: {1} Epochs Wt Training'.format(strng,epochs), fontsize=16)
         plt.plot(range(epochs), loss[1:], lw = 3.0)
         plt.xlabel('Epoch', fontsize=16)
         plt.ylabel('Loss', fontsize=16)
