@@ -6,7 +6,6 @@ Skeletal implementation of strict PC alg from Rosenbaum (2022).
 "On the relationship between predictive coding and backpropagation,"
 PLoS ONE, 17(3): e0266102.
 
-
 Implements Table 8 from unpublished manuscript by Maida.
 Works for only one training sample of MNIST to assess convergence.
 Seems to work. Desired values of v2 are y = [0,0,0,0,0,1,0,0,0,0].
@@ -113,11 +112,13 @@ Present the same sample for wt_eps.
 v2_values = [[] for _ in range(num_classes)] # Samuel's idea
 v1_values = [[] for _ in range(10)]
 
-# Redo forward sweep (wts haven't been change yet.)
+# Redo forward sweep (wts haven't changed yet.)
 v1 = layer1(W0, v0)  # num_hiddens x 1
 v2 = layer2(W1, v1)
 
 loss   = [None] * (wt_eps + 1)
+
+torch.manual_seed(1) # for reproducibility to test effect of code changes
 for ep in range(wt_eps):
     for i in range(equi_steps):
         v2       = torch.matmul(W1, relu(v1))  # redundant on 1st iter b/c already computed by forward sweep
@@ -130,12 +131,11 @@ for ep in range(wt_eps):
     W0       = W0 + gamma*delta_W0
     delta_W1 = torch.matmul(-e2, jacobian(layer2, (W1,v1))[0])
     W1       = W1 + gamma*delta_W1
-    print(f"Finished {ep} epoch(s).")
-    # record keeping in next 2 lines
+    print(f"Finished {ep+1} epoch(s). \ne1: {e1}; \ne2: {e2}; \nv1: {v1}; \nv2: {v2}\n")
     loss[ep+1] = 2*torch.sum(y-v2)**2 # record loss at end of epoch
-    for j in range(num_classes):
+    for j in range(num_classes): # save data for plots
         v2_values[j].append(v2[j].item())    
-    for j in range(10):
+    for j in range(10): # save data for plots
         v1_values[j].append(v1[j].item())      
 
 pc_plotter.plot_convergence_process('v1', v1_values, 10, wt_eps, equi_steps)
@@ -148,7 +148,7 @@ v2_at_end = layer2(W1, v1_at_end)
 # single training example 5. It appears to be learning correctly.
 pc_plotter.plot_unit_convergence("v2", v2_at_t0, v2_at_end, num_classes, 
                                  wt_eps, equi_steps, ylim1=-1, ylim2=2)
-pc_plotter.plot_loss(wt_eps, equi_steps, loss)
+pc_plotter.plot_loss("", wt_eps, equi_steps, loss)
 
 
 
